@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'coin_data.dart';
 import 'dart:io' show Platform;
 
-
 class PriceScreen extends StatefulWidget {
   @override
   _PriceScreenState createState() => _PriceScreenState();
@@ -11,14 +10,13 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
 
-  String bitcoinValuetoUSD;
+  String bitcoinValue = '?';
 
   void getData() async {
     try {
-      double data = await CoinData().getCoinData();
+      var data = await CoinData().getCoinData(selectedCurrency);
       setState(() {
-        bitcoinValuetoUSD = data.toStringAsFixed(0);
-        print(data);
+        bitcoinValue = data;
       });
     } catch (e) {
       print(e);
@@ -31,14 +29,12 @@ class _PriceScreenState extends State<PriceScreen> {
     getData();
   }
 
-  String selectedCurrency = 'USD';
+  String selectedCurrency = 'AUD';
 
   DropdownButton<String> androidDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
-    for (int i = 0; i < currenciesList.length; i++) {
-      String currency = currenciesList[i];
+    for (String currency in currenciesList) {
       var newItem = DropdownMenuItem(child: Text(currency), value: currency);
-
       dropdownItems.add(newItem);
     }
 
@@ -48,10 +44,10 @@ class _PriceScreenState extends State<PriceScreen> {
         onChanged: (value) {
           setState(() {
             selectedCurrency = value;
+            getData();
           });
         });
   }
-
 
   CupertinoPicker iOSPicker() {
     List<Text> pickerItems = [];
@@ -64,12 +60,18 @@ class _PriceScreenState extends State<PriceScreen> {
       backgroundColor: Colors.lightBlue,
       itemExtent: 32.0,
       onSelectedItemChanged: (selectedIndex) {
-        print(currenciesList[selectedIndex]);
-        selectedCurrency = currenciesList[selectedIndex];
+        print(selectedIndex);
+        setState(() {
+          selectedCurrency = currenciesList[selectedIndex];
+          getData();
+        });
+
       },
       children: pickerItems,
     );
   }
+
+
 
   Widget getPicker() {
     if (Platform.isIOS) {
@@ -100,7 +102,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = $bitcoinValuetoUSD USD',
+                  '1 BTC = $bitcoinValue $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
