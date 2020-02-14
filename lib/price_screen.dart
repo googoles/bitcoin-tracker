@@ -11,12 +11,18 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
 
   String bitcoinValue = '?';
+  String ethValue = '?';
+  String ltcValue = '?';
 
   void getData() async {
     try {
-      var data = await CoinData().getCoinData(selectedCurrency);
+      var dataBTC = await CoinData().getCoinDataBTC(selectedCurrency);
+      var dataETH = await CoinData().getCoinDataETH(selectedCurrency);
+      var dataLTC = await CoinData().getCoinDataLTC(selectedCurrency);
       setState(() {
-        bitcoinValue = data;
+        bitcoinValue = dataBTC;
+        ethValue = dataETH;
+        ltcValue = dataLTC;
       });
     } catch (e) {
       print(e);
@@ -29,7 +35,7 @@ class _PriceScreenState extends State<PriceScreen> {
     getData();
   }
 
-  String selectedCurrency = 'AUD';
+  String selectedCurrency = 'KRW';
 
   DropdownButton<String> androidDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
@@ -57,7 +63,7 @@ class _PriceScreenState extends State<PriceScreen> {
     }
 
     return CupertinoPicker(
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: Colors.brown,
       itemExtent: 32.0,
       onSelectedItemChanged: (selectedIndex) {
         print(selectedIndex);
@@ -85,16 +91,18 @@ class _PriceScreenState extends State<PriceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('🤑 Coin Ticker'),
+        title: Text('Crypto Tracker',
+        textAlign: TextAlign.center,),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+
           Padding(
             padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
             child: Card(
-              color: Colors.lightBlueAccent,
+              color: Colors.grey,
               elevation: 5.0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -102,7 +110,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = $bitcoinValue $selectedCurrency',
+                  '1 ${cryptoList[0]} = $bitcoinValue $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -110,14 +118,59 @@ class _PriceScreenState extends State<PriceScreen> {
                   ),
                 ),
               ),
+
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+            child: Card(
+              color: Colors.grey,
+              elevation: 5.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+                child: Text(
+                  '1 ${cryptoList[1]} = $ethValue $selectedCurrency',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+            child: Card(
+              color: Colors.grey,
+              elevation: 5.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+                child: Text(
+                  '1 ${cryptoList[2]} = $ltcValue $selectedCurrency',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+
             ),
           ),
           Container(
               height: 150.0,
               alignment: Alignment.center,
               padding: EdgeInsets.only(bottom: 30.0),
-              color: Colors.lightBlue,
-              child: Platform.isIOS ? iOSPicker() : androidDropdown()),
+              color: Colors.brown[500],
+              child: iOSPicker()),
         ],
       ),
     );

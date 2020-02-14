@@ -36,8 +36,42 @@ const List<String> cryptoList = [
 ];
 
 class CoinData {
-  Future getCoinData(String selectedCurrency) async {
-    String requestUrl = '$coinChartUrl/BTC/$selectedCurrency/?apikey=$apiKey';
+  Future getCoinDataBTC(String selectedCurrency) async {
+    String requestUrl = '$coinChartUrl/${cryptoList[0]}/$selectedCurrency/?apikey=$apiKey';
+
+    http.Response response = await http.get(requestUrl);
+
+    if (response.statusCode == 200) {
+      var decodedData = jsonDecode(response.body);
+
+      var lastPrice = decodedData['rate'];
+
+      return lastPrice.toStringAsFixed(0);
+    } else {
+      print(response.statusCode);
+
+      throw 'Problem with the get request';
+    }
+  }
+  Future getCoinDataETH(String selectedCurrency) async {
+    String requestUrl = '$coinChartUrl/${cryptoList[1]}/$selectedCurrency/?apikey=$apiKey';
+
+    http.Response response = await http.get(requestUrl);
+
+    if (response.statusCode == 200) {
+      var decodedData = jsonDecode(response.body);
+
+      var lastPrice = decodedData['rate'];
+
+      return lastPrice.toStringAsFixed(0);
+    } else {
+      print(response.statusCode);
+
+      throw 'Problem with the get request';
+    }
+  }
+  Future getCoinDataLTC(String selectedCurrency) async {
+    String requestUrl = '$coinChartUrl/${cryptoList[2]}/$selectedCurrency/?apikey=$apiKey';
 
     http.Response response = await http.get(requestUrl);
 
